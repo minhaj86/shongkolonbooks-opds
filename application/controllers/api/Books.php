@@ -35,10 +35,10 @@ class Books extends REST_Controller {
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->formatOutput = true;
         $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
-        self::_addNavigationLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
-        self::_addNavigationLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
-        self::_addNavigationLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
-        self::_addNavigationLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
         $xml->appendChild($feed);
         foreach ( $news as $e ) {
             self::_add_book_entry($xml,$feed,$e);
@@ -54,10 +54,10 @@ class Books extends REST_Controller {
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->formatOutput = true;
         $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
-        self::_addNavigationLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
-        self::_addNavigationLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
-        self::_addNavigationLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
-        self::_addNavigationLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
         $xml->appendChild($feed);
         foreach ( $news as $e ) {
             self::_add_book_entry($xml,$feed,$e);
@@ -82,50 +82,23 @@ class Books extends REST_Controller {
             self::_addChildElementDcterms($xml, 'issued', $e['issue_ts'], $entry);
             self::_addChildElementDcterms($xml, 'extent', $e['no_of_pages'], $entry);
             self::_addChildElementDcterms($xml, 'extent', $e['size'], $entry);
-            // self::_addChildElementAtom($xml, 'summary', $e['summary'], $entry);
-            $linkalternate = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkalternate->setAttribute("type", "text/html");
-            $linkalternate->setAttribute("title", $e['title']);
-            $linkalternate->setAttribute("href", $e['alternate_link']);
-            $linkalternate->setAttribute("rel", "alternate");
-            $entry->appendChild($linkalternate);
-
-            $linkimage = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkimage->setAttribute("type", "image/jpeg");
-            $linkimage->setAttribute("href", $e['main_image']);
-            $linkimage->setAttribute("rel", "http://opds-spec.org/image");
-            $entry->appendChild($linkimage);
-
-            $linkthumb = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkthumb->setAttribute("type", "image/jpeg");
-            $linkthumb->setAttribute("href", $e['thumb_image']);
-            $linkthumb->setAttribute("rel", "http://opds-spec.org/image/thumbnail");
-            $entry->appendChild($linkthumb);
-
-            $linkbuy = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkbuy->setAttribute("type", "text/html");
-            $linkbuy->setAttribute("href", $e['buy_link']);
-            $linkbuy->setAttribute("rel", "http://opds-spec.org/acquisition/buy");
-
+            self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image",$e['main_image'],"image/jpeg");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",$e['thumb_image'],"image/jpeg");
+            $linkbuy = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/buy",$e['buy_link'],"text/html");
             $price = self::_addChildElementOpds($xml, 'price', '0');
             $price->setAttribute('currencycode', 'USD');
+            $linkbuy->appendChild($price);
+            $linkbuy->appendChild($indirectAcquisition);
             $indirectAcquisition  = self::_addChildElementOpds($xml, 'indirectAcquisition');
             $indirectAcquisition->setAttribute('type', 'application/vnd.adobe.adept+xml');
             $indirectAcquisitionepub  = self::_addChildElementOpds($xml, 'indirectAcquisition');
             $indirectAcquisitionepub->setAttribute('type', 'application/epub+zip');
             $indirectAcquisition->appendChild($indirectAcquisitionepub);
-
             $auths = $this->book_model->get_writer_by_book($e['id']);
             foreach ( $auths as $a ) {
                 self::_add_author($xml,$entry,$a);
             }
-            // print_r();
-
-            $linkbuy->appendChild($price);
-            $linkbuy->appendChild($indirectAcquisition);
-
-            $entry->appendChild($linkbuy);
-
             return $entry;
     }
 
@@ -138,7 +111,7 @@ class Books extends REST_Controller {
             $entry->appendChild($author);
     }
 
-    private function _addAcquisitiontionLink($xml,$feed,$rel,$href) {
+    private function _addAcquisitionLink($xml,$feed,$rel,$href) {
         return self::_addLink($xml,$feed,$rel,$href,"application/atom+xml;profile=opds-catalog;kind=acquisition");
     }
     private function _addNavigationLink($xml,$feed,$rel,$href) {
