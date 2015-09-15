@@ -32,135 +32,41 @@ class Books extends REST_Controller {
     {
         $this->load->model('book_model');
         $news = $this->book_model->get_book_all();
-
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->formatOutput = true;
-
         $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
-        $linkself = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkself->setAttribute("rel", "self");
-        $linkself->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkself->setAttribute("href", $this->input->server('REQUEST_URI'));
-        $linkup = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkup->setAttribute("rel", "up");
-        $linkup->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkup->setAttribute("href", $this->input->server('REQUEST_URI'));
-        $linkstart = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkstart->setAttribute("rel", "start");
-        $linkstart->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkstart->setAttribute("href", $this->input->server('REQUEST_URI'));
-        $linkrelated = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkrelated->setAttribute("rel", "related");
-        $linkrelated->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkrelated->setAttribute("href", $this->input->server('REQUEST_URI'));
-
-        $feed->appendChild( $linkself );
-        $feed->appendChild( $linkstart );
-        $feed->appendChild( $linkup );
-        $feed->appendChild( $linkrelated );
-
+        self::_addNavigationLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
+        self::_addNavigationLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
+        self::_addNavigationLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
+        self::_addNavigationLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
         $xml->appendChild($feed);
-
         foreach ( $news as $e ) {
-            $entry = self::_addChildElementAtom($xml, 'entry', null, $feed);
-            self::_addChildElementAtom($xml, 'id', "urn:uuid:".$e['id'], $entry);
-            self::_addChildElementAtom($xml, 'title', $e['title'], $entry);
-            self::_addChildElementAtom($xml, 'summary', $e['summary'], $entry);
-            $dctermId = self::_addChildElementDcterms($xml, 'identifier', "urn:uuid:".$e['isbn'], $entry);
-            $dctermId->setAttributeNS( "http://www.w3.org/2001/XMLSchema-instance", "xsi:type", "dcterms:URI");
-            $dctermSrc = self::_addChildElementDcterms($xml, 'source', "urn:uuid:".$e['isbn'], $entry);
-            $dctermSrc->setAttributeNS( "http://www.w3.org/2001/XMLSchema-instance", "xsi:type", "dcterms:URI");
-            self::_addChildElementAtom($xml, 'published', $e['publish_ts'], $entry);
-            self::_addChildElementAtom($xml, 'updated', $e['update_ts'], $entry);
-            self::_addChildElementDcterms($xml, 'language', $e['language'], $entry);
-            self::_addChildElementDcterms($xml, 'publisher', $e['publisher'], $entry);
-            self::_addChildElementDcterms($xml, 'issued', $e['issue_ts'], $entry);
-            self::_addChildElementDcterms($xml, 'extent', $e['no_of_pages'], $entry);
-            self::_addChildElementDcterms($xml, 'extent', $e['size'], $entry);
-            // self::_addChildElementAtom($xml, 'summary', $e['summary'], $entry);
-            $linkalternate = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkalternate->setAttribute("type", "text/html");
-            $linkalternate->setAttribute("title", $e['title']);
-            $linkalternate->setAttribute("href", $e['alternate_link']);
-            $linkalternate->setAttribute("rel", "alternate");
-            $entry->appendChild($linkalternate);
-
-            $linkimage = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkimage->setAttribute("type", "image/jpeg");
-            $linkimage->setAttribute("href", $e['main_image']);
-            $linkimage->setAttribute("rel", "http://opds-spec.org/image");
-            $entry->appendChild($linkimage);
-
-            $linkthumb = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkthumb->setAttribute("type", "image/jpeg");
-            $linkthumb->setAttribute("href", $e['thumb_image']);
-            $linkthumb->setAttribute("rel", "http://opds-spec.org/image/thumbnail");
-            $entry->appendChild($linkthumb);
-
-            $linkbuy = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-            $linkbuy->setAttribute("type", "text/html");
-            $linkbuy->setAttribute("href", $e['buy_link']);
-            $linkbuy->setAttribute("rel", "http://opds-spec.org/acquisition/buy");
-
-            $price = self::_addChildElementOpds($xml, 'price', '0');
-            $price->setAttribute('currencycode', 'USD');
-            $indirectAcquisition  = self::_addChildElementOpds($xml, 'indirectAcquisition');
-            $indirectAcquisition->setAttribute('type', 'application/vnd.adobe.adept+xml');
-            $indirectAcquisitionepub  = self::_addChildElementOpds($xml, 'indirectAcquisition');
-            $indirectAcquisitionepub->setAttribute('type', 'application/epub+zip');
-            $indirectAcquisition->appendChild($indirectAcquisitionepub);
-
-            $linkbuy->appendChild($price);
-            $linkbuy->appendChild($indirectAcquisition);
-
-
-
-            $entry->appendChild($linkbuy);
-
-         // <opds:price currencycode="USD">69.49</opds:price>
-         // <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
-         //    <opds:indirectAcquisition type="application/epub+zip" />
-         // </opds:indirectAcquisition>
-
+            self::_add_book_entry($xml,$feed,$e);
         }
         $output = $xml->saveXML();
-        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+        $this->response($output, REST_Controller::HTTP_OK);
     }
 
     public function writer_get($id)
     {
         $this->load->model('book_model');
         $news = $this->book_model->get_book_by_writer($id);
-
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->formatOutput = true;
-
         $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
-        $linkself = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkself->setAttribute("rel", "self");
-        $linkself->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkself->setAttribute("href", $this->input->server('REQUEST_URI'));
-        $linkup = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkup->setAttribute("rel", "up");
-        $linkup->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkup->setAttribute("href", $this->input->server('REQUEST_URI'));
-        $linkstart = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkstart->setAttribute("rel", "start");
-        $linkstart->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkstart->setAttribute("href", $this->input->server('REQUEST_URI'));
-        $linkrelated = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
-        $linkrelated->setAttribute("rel", "related");
-        $linkrelated->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
-        $linkrelated->setAttribute("href", $this->input->server('REQUEST_URI'));
-
-        $feed->appendChild( $linkself );
-        $feed->appendChild( $linkstart );
-        $feed->appendChild( $linkup );
-        $feed->appendChild( $linkrelated );
-
+        self::_addNavigationLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
+        self::_addNavigationLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
+        self::_addNavigationLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
+        self::_addNavigationLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
         $xml->appendChild($feed);
-
         foreach ( $news as $e ) {
+            self::_add_book_entry($xml,$feed,$e);
+        }
+        $output = $xml->saveXML();
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
+
+    private function _add_book_entry($xml,$feed,$e) {
             $entry = self::_addChildElementAtom($xml, 'entry', null, $feed);
             self::_addChildElementAtom($xml, 'id', "urn:uuid:".$e['id'], $entry);
             self::_addChildElementAtom($xml, 'title', $e['title'], $entry);
@@ -209,25 +115,42 @@ class Books extends REST_Controller {
             $indirectAcquisitionepub->setAttribute('type', 'application/epub+zip');
             $indirectAcquisition->appendChild($indirectAcquisitionepub);
 
+            $auths = $this->book_model->get_writer_by_book($e['id']);
+            foreach ( $auths as $a ) {
+                self::_add_author($xml,$entry,$a);
+            }
+            // print_r();
+
             $linkbuy->appendChild($price);
             $linkbuy->appendChild($indirectAcquisition);
 
-
-
             $entry->appendChild($linkbuy);
 
-         // <opds:price currencycode="USD">69.49</opds:price>
-         // <opds:indirectAcquisition type="application/vnd.adobe.adept+xml">
-         //    <opds:indirectAcquisition type="application/epub+zip" />
-         // </opds:indirectAcquisition>
-
-        }
-        $output = $xml->saveXML();
-        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+            return $entry;
     }
 
-    private function _create_entry($xml,$e) {
-        
+    private function _add_author($xml,$entry,$a) {
+            $author = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:author");
+            $name = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:name", $a['name']);
+            $uri = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:uri" , 'http://dummy/author');
+            $author->appendChild($name);
+            $author->appendChild($uri);
+            $entry->appendChild($author);
+    }
+
+    private function _addAcquisitiontionLink($xml,$feed,$rel,$href) {
+        return self::_addLink($xml,$feed,$rel,$href,"application/atom+xml;profile=opds-catalog;kind=acquisition");
+    }
+    private function _addNavigationLink($xml,$feed,$rel,$href) {
+        return self::_addLink($xml,$feed,$rel,$href,"application/atom+xml;profile=opds-catalog;kind=navigation");
+    }
+    private function _addLink($xml,$feed,$rel,$href,$type) {
+        $link = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $link->setAttribute("rel", $rel);
+        $link->setAttribute("type", $type);
+        $link->setAttribute("href", $href);
+        $feed->appendChild( $link );
+        return $link;
     }
 
     public function _addChildElementAtom($doc, $name, $value=null, $parent=null) {
