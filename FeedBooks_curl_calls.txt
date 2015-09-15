@@ -1,0 +1,88 @@
+FeedBooks curl calls
+
+curl 'https://www.feedbooks.com/item/391989/buy' -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,bn;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/44.0.2403.89 Chrome/44.0.2403.89 Safari/537.36' -H 'HTTPS: 1' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cookie: secure_auth=fec4d3ea0264141fa739f8f333b088e0a199b825; _gat=1; id=; auth=; _sn=BAh7BzoQX2NzcmZfdG9rZW4iMUxMaUxyWHdrTWpwMFdmSlRxaDRMQ3ZOSHJ1dld3c1pjVHhRU3NXMjk2c2M9Og9zZXNzaW9uX2lkIiVhYTZkNGI3ZTYzODIyMGE1MDRiNzE2MzZiNzU1YjY1MQ%3D%3D--83ca0492596bf436fa3081792f9625fe93a53690; _ga=GA1.2.1407079209.1441614643' -H 'Connection: keep-alive' --compressed
+
+
+HTTP/1.1 302 Found
+Server: nginx/1.6.2
+Date: Thu, 10 Sep 2015 08:05:06 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 103
+Connection: keep-alive
+Status: 302 Found
+X-Runtime: 2
+Set-Cookie: _sn=BAh7CjoYcmVkaXJlY3RfY29udHJvbGxlciIJaXRlbToQX2NzcmZfdG9rZW4iMUxMaUxyWHdrTWpwMFdmSlRxaDRMQ3ZOSHJ1dld3c1pjVHhRU3NXMjk2c2M9OhRyZWRpcmVjdF9hY3Rpb24iCGJ1eToUcmVkaXJlY3RfcGFyYW1zQzoeSGFzaFdpdGhJbmRpZmZlcmVudEFjY2Vzc3sIIgdpZCILMzkxOTg5IgthY3Rpb25ACCIPY29udHJvbGxlciIJaXRlbToPc2Vzc2lvbl9pZCIlYWE2ZDRiN2U2MzgyMjBhNTA0YjcxNjM2Yjc1NWI2NTE%3D--2bbd129f90e7347962086cf4fabe9d87fa30ed95; domain=.feedbooks.com; path=/; HttpOnly
+Location: https://www.feedbooks.com/user/signin
+Cache-Control: no-cache
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+
+
+
+
+
+
+curl 'https://www.feedbooks.com/user/signin' -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,bn;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/44.0.2403.89 Chrome/44.0.2403.89 Safari/537.36' -H 'HTTPS: 1' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cookie: secure_auth=fec4d3ea0264141fa739f8f333b088e0a199b825; _gat=1; id=; auth=; _ga=GA1.2.1407079209.1441614643; _sn=BAh7CjoYcmVkaXJlY3RfY29udHJvbGxlciIJaXRlbToQX2NzcmZfdG9rZW4iMUxMaUxyWHdrTWpwMFdmSlRxaDRMQ3ZOSHJ1dld3c1pjVHhRU3NXMjk2c2M9OhRyZWRpcmVjdF9hY3Rpb24iCGJ1eToUcmVkaXJlY3RfcGFyYW1zQzoeSGFzaFdpdGhJbmRpZmZlcmVudEFjY2Vzc3sIIgdpZCILMzkxOTg5IgthY3Rpb25ACCIPY29udHJvbGxlciIJaXRlbToPc2Vzc2lvbl9pZCIlYWE2ZDRiN2U2MzgyMjBhNTA0YjcxNjM2Yjc1NWI2NTE%3D--2bbd129f90e7347962086cf4fabe9d87fa30ed95' -H 'Connection: keep-alive' --compressed
+
+
+HTTP/1.1 200 OK
+Server: nginx/1.6.2
+Date: Thu, 10 Sep 2015 08:05:07 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Status: 200 OK
+X-Runtime: 38
+Set-Cookie: _sn=BAh7CyIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNoSGFzaHsGOgtzaWduaW4iAAY6CkB1c2VkewY7BkY6GHJlZGlyZWN0X2NvbnRyb2xsZXIiCWl0ZW06FHJlZGlyZWN0X2FjdGlvbiIIYnV5OhBfY3NyZl90b2tlbiIxTExpTHJYd2tNanAwV2ZKVHFoNExDdk5IcnV2V3dzWmNUeFFTc1cyOTZzYz06FHJlZGlyZWN0X3BhcmFtc0M6Hkhhc2hXaXRoSW5kaWZmZXJlbnRBY2Nlc3N7CCILYWN0aW9uQAsiB2lkIgszOTE5ODkiD2NvbnRyb2xsZXIiCWl0ZW06D3Nlc3Npb25faWQiJWFhNmQ0YjdlNjM4MjIwYTUwNGI3MTYzNmI3NTViNjUx--54936858e788d2710115efed5e054f061710b032; domain=.feedbooks.com; path=/; HttpOnly
+Cache-Control: private, max-age=0, must-revalidate
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Content-Encoding: gzip
+
+
+
+
+curl 'https://www.feedbooks.com/user/signin' -H 'Cookie: secure_auth=fec4d3ea0264141fa739f8f333b088e0a199b825; _gat=1; id=; auth=; _sn=BAh7CyIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNoSGFzaHsGOgtzaWduaW4iAAY6CkB1c2VkewY7BkY6GHJlZGlyZWN0X2NvbnRyb2xsZXIiCWl0ZW06FHJlZGlyZWN0X2FjdGlvbiIIYnV5OhBfY3NyZl90b2tlbiIxTExpTHJYd2tNanAwV2ZKVHFoNExDdk5IcnV2V3dzWmNUeFFTc1cyOTZzYz06FHJlZGlyZWN0X3BhcmFtc0M6Hkhhc2hXaXRoSW5kaWZmZXJlbnRBY2Nlc3N7CCILYWN0aW9uQAsiB2lkIgszOTE5ODkiD2NvbnRyb2xsZXIiCWl0ZW06D3Nlc3Npb25faWQiJWFhNmQ0YjdlNjM4MjIwYTUwNGI3MTYzNmI3NTViNjUx--54936858e788d2710115efed5e054f061710b032; _ga=GA1.2.1407079209.1441614643' -H 'Origin: https://www.feedbooks.com' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8,bn;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/44.0.2403.89 Chrome/44.0.2403.89 Safari/537.36' -H 'HTTPS: 1' -H 'Content-Type: application/x-www-form-urlencoded' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Cache-Control: max-age=0' -H 'Referer: https://www.feedbooks.com/user/signin' -H 'Connection: keep-alive' --data 'authenticity_token=LLiLrXwkMjp0WfJTqh4LCvNHruvWwsZcTxQSsW296sc%3D&user%5Busername%5D=rubaiat.csedu.10%40gmail.com&user%5Bpassword%5D=FeedBooks86&commit=OK' --compressed
+
+HTTP/1.1 302 Found
+Server: nginx/1.6.2
+Date: Thu, 10 Sep 2015 08:08:51 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 107
+Connection: keep-alive
+Status: 302 Found
+X-Runtime: 24
+Location: https://www.feedbooks.com/item/391989/buy
+Access-Control-Allow-Origin: https://www.feedbooks.com
+Cache-Control: no-cache
+Set-Cookie: id=1560027; domain=.feedbooks.com; path=/; expires=Sat, 10-Oct-2015 08:08:51 GMT
+Set-Cookie: auth=99975f2f4c10d92234ccf4397cae8482353232a6; domain=.feedbooks.com; path=/; expires=Sat, 10-Oct-2015 08:08:51 GMT
+Set-Cookie: secure_auth=fec4d3ea0264141fa739f8f333b088e0a199b825; domain=.feedbooks.com; path=/; secure
+Set-Cookie: _sn=BAh7CiIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNoSGFzaHsGOgtzaWduaW4iAAY6CkB1c2VkewY7BkY6EF9jc3JmX3Rva2VuIjFMTGlMclh3a01qcDBXZkpUcWg0TEN2TkhydXZXd3NaY1R4UVNzVzI5NnNjPToMdXNlcl9pZGkD280XOg9zZXNzaW9uX2lkIiVhYTZkNGI3ZTYzODIyMGE1MDRiNzE2MzZiNzU1YjY1MToOdXNlcl9hdXRoIi05OTk3NWYyZjRjMTBkOTIyMzRjY2Y0Mzk3Y2FlODQ4MjM1MzIzMmE2--cf6e5a3c1f631745af1ebb16c7ad4e14ea597800; domain=.feedbooks.com; path=/; HttpOnly
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+
+
+
+curl 'https://www.feedbooks.com/item/391989/buy' -H 'Accept-Encoding: gzip, deflate, sdch' -H 'Accept-Language: en-US,en;q=0.8,bn;q=0.6' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/44.0.2403.89 Chrome/44.0.2403.89 Safari/537.36' -H 'HTTPS: 1' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Referer: https://www.feedbooks.com/user/signin' -H 'Cookie: _gat=1; _ga=GA1.2.1407079209.1441614643; id=1560027; auth=99975f2f4c10d92234ccf4397cae8482353232a6; secure_auth=fec4d3ea0264141fa739f8f333b088e0a199b825; _sn=BAh7CiIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNoSGFzaHsGOgtzaWduaW4iAAY6CkB1c2VkewY7BkY6EF9jc3JmX3Rva2VuIjFMTGlMclh3a01qcDBXZkpUcWg0TEN2TkhydXZXd3NaY1R4UVNzVzI5NnNjPToMdXNlcl9pZGkD280XOg9zZXNzaW9uX2lkIiVhYTZkNGI3ZTYzODIyMGE1MDRiNzE2MzZiNzU1YjY1MToOdXNlcl9hdXRoIi05OTk3NWYyZjRjMTBkOTIyMzRjY2Y0Mzk3Y2FlODQ4MjM1MzIzMmE2--cf6e5a3c1f631745af1ebb16c7ad4e14ea597800' -H 'Connection: keep-alive' -H 'Cache-Control: max-age=0' --compressed
+
+
+HTTP/1.1 200 OK
+Server: nginx/1.6.2
+Date: Thu, 10 Sep 2015 08:08:51 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Status: 200 OK
+X-Runtime: 111
+Set-Cookie: id=1560027; domain=.feedbooks.com; path=/; expires=Sat, 10-Oct-2015 08:08:51 GMT
+Set-Cookie: auth=99975f2f4c10d92234ccf4397cae8482353232a6; domain=.feedbooks.com; path=/; expires=Sat, 10-Oct-2015 08:08:51 GMT
+Set-Cookie: secure_auth=fec4d3ea0264141fa739f8f333b088e0a199b825; domain=.feedbooks.com; path=/; secure
+Set-Cookie: _sn=BAh7CiIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNoSGFzaHsGOgtzaWduaW4wBjoKQHVzZWR7BjsGRjoQX2NzcmZfdG9rZW4iMUxMaUxyWHdrTWpwMFdmSlRxaDRMQ3ZOSHJ1dld3c1pjVHhRU3NXMjk2c2M9Og51c2VyX2F1dGgiLTk5OTc1ZjJmNGMxMGQ5MjIzNGNjZjQzOTdjYWU4NDgyMzUzMjMyYTY6D3Nlc3Npb25faWQiJWFhNmQ0YjdlNjM4MjIwYTUwNGI3MTYzNmI3NTViNjUxOgx1c2VyX2lkaQPbzRc%3D--7822d4d713fb0c9c342eca56dbf12dfe4166a02f; domain=.feedbooks.com; path=/; HttpOnly
+Cache-Control: private, max-age=0, must-revalidate
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Content-Encoding: gzip
+
+
+
