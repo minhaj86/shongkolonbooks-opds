@@ -29,6 +29,7 @@ class Books extends REST_Controller {
     }
 
     public function file_get($id) {
+        // print_r($this->input->request_headers());
         $this->load->model('book_model');
         $news = $this->book_model->get_file_by_book_id($id);
         $filepath = $news[0]['filepath'];
