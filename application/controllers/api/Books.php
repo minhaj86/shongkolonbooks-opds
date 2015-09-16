@@ -66,7 +66,19 @@ class Books extends REST_Controller {
         $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
 
-    private function _add_book_entry($xml,$feed,$e) {
+    public function item_get($id)
+    {
+        $this->load->model('book_model');
+        $news = $this->book_model->get_book_by_id($id);
+        $xml = new DOMDocument( "1.0", "UTF-8" );
+        $xml->formatOutput = true;
+        $e = $news[0];
+        self::_add_book_entry($xml,$xml,$e,1);
+        $output = $xml->saveXML();
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
+
+    private function _add_book_entry($xml,$feed,$e,$is_alternate=null) {
             $entry = self::_addChildElementAtom($xml, 'entry', null, $feed);
             self::_addChildElementAtom($xml, 'id', "urn:uuid:".$e['id'], $entry);
             self::_addChildElementAtom($xml, 'title', $e['title'], $entry);
@@ -82,24 +94,31 @@ class Books extends REST_Controller {
             self::_addChildElementDcterms($xml, 'issued', $e['issue_ts'], $entry);
             self::_addChildElementDcterms($xml, 'extent', $e['no_of_pages'], $entry);
             self::_addChildElementDcterms($xml, 'extent', $e['size'], $entry);
-            self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");
-            self::_addLink($xml,$entry,"http://opds-spec.org/image",$e['main_image'],"image/jpeg");
-            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",$e['thumb_image'],"image/jpeg");
-            $linkbuy = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/buy",$e['buy_link'],"text/html");
+            if (!$is_alternate) {
+                self::_addLink($xml,$entry,"alternate",self::_get_base_uri()."/test/api/books/item/".$e['id'],"application/xml");
+            }
+            // self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image",self::_get_base_uri().$e['main_image'],"image/jpeg");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",self::_get_base_uri().$e['thumb_image'],"image/jpeg");
+            $linkbuy = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/buy",self::_get_base_uri().$e['buy_link'],"text/html");
             $price = self::_addChildElementOpds($xml, 'price', '0');
             $price->setAttribute('currencycode', 'USD');
             $linkbuy->appendChild($price);
-            $linkbuy->appendChild($indirectAcquisition);
             $indirectAcquisition  = self::_addChildElementOpds($xml, 'indirectAcquisition');
             $indirectAcquisition->setAttribute('type', 'application/vnd.adobe.adept+xml');
             $indirectAcquisitionepub  = self::_addChildElementOpds($xml, 'indirectAcquisition');
             $indirectAcquisitionepub->setAttribute('type', 'application/epub+zip');
             $indirectAcquisition->appendChild($indirectAcquisitionepub);
+            $linkbuy->appendChild($indirectAcquisition);
             $auths = $this->book_model->get_writer_by_book($e['id']);
             foreach ( $auths as $a ) {
                 self::_add_author($xml,$entry,$a);
             }
             return $entry;
+    }
+
+    private function _get_base_uri() {
+        return "http://".$this->input->server('SERVER_NAME')."";
     }
 
     private function _add_author($xml,$entry,$a) {
