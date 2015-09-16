@@ -28,6 +28,13 @@ class Books extends REST_Controller {
         $this->methods['books_get']['limit'] = 500; // 500 requests per hour per user/key
     }
 
+    public function file_get($id) {
+        $this->load->model('book_model');
+        $news = $this->book_model->get_file_by_book_id($id);
+        $filepath = $news[0]['filepath'];
+        $this->output->set_content_type('application/epub+zip')->set_output(file_get_contents($filepath));
+    }
+
     public function all_get()
     {
         $this->load->model('book_model');

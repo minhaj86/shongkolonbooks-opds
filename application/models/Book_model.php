@@ -21,6 +21,11 @@ class Book_model extends CI_Model {
             $query = $this->db->query("select * from opds_books where id=$id");
             return $query->result_array();
     }
+    public function get_file_by_book_id($id) {
+        $sql = "SELECT CONCAT(s.mountpoint,f.name) AS filepath  FROM opds_files AS f, opds_storages AS s WHERE f.storage_id = s.id AND f.id IN (SELECT file_id FROM opds_books WHERE id = $id )";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
     // public function get_catalogs() {
     //         $query = $this->db->query('select * from opds_catalogs');
     //         return $query->result_array();

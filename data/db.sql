@@ -60,6 +60,7 @@ CREATE TABLE `opds_books` (
   `summary` varchar(200) NOT NULL,
   `no_of_pages` int(11) NOT NULL,
   `size` int(11) NOT NULL,
+  `file_id` int(11) NOT NULL,
   `alternate_link` varchar(200) NOT NULL,
   `buy_link` varchar(200) NOT NULL,
   `main_image` varchar(200) NOT NULL,
@@ -74,7 +75,7 @@ CREATE TABLE `opds_books` (
 
 LOCK TABLES `opds_books` WRITE;
 /*!40000 ALTER TABLE `opds_books` DISABLE KEYS */;
-INSERT INTO `opds_books` VALUES (1,'don quixote','12345','2015-09-08','2015-09-08','en','abc pub',1,'0000-00-00','adventure story of don quixote',300,3000000,'/opencar/upload/author','/opencar/upload/author','/opencar/upload/author','/opencar/upload/author'),(2,'crugo','45678','2015-09-08','2015-09-08','bn','onnoprokash',2,'0000-00-00','fgfhfgdgdfe',100,1000000,'/opencar/upload/author','/opencar/upload/author','/opencar/upload/author','/opencar/upload/author'),(3,'project nebula','4567833','2015-09-08','2015-09-08','bn','onnoprokash',1,'0000-00-00','llllokjko',100,1000000,'/opencar/upload/author','/opencar/upload/author','/opencar/upload/author','/opencar/upload/author');
+INSERT INTO `opds_books` VALUES (1,'don quixote','12345','2015-09-08','2015-09-08','en','abc pub',1,'0000-00-00','adventure story of don quixote',300,3000000,1,'/opencar/upload/author','/opencar/upload/author','/opencar/upload/author','/opencar/upload/author'),(2,'crugo','45678','2015-09-08','2015-09-08','bn','onnoprokash',2,'0000-00-00','fgfhfgdgdfe',100,1000000,2,'/opencar/upload/author','/opencar/upload/author','/opencar/upload/author','/opencar/upload/author'),(3,'project nebula','4567833','2015-09-08','2015-09-08','bn','onnoprokash',1,'0000-00-00','llllokjko',100,1000000,3,'/opencar/upload/author','/opencar/upload/author','/opencar/upload/author','/opencar/upload/author');
 /*!40000 ALTER TABLE `opds_books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -207,6 +208,83 @@ LOCK TABLES `opds_users` WRITE;
 INSERT INTO `opds_users` VALUES (1,'user1','adfkhgfjuytiuy8762872674kbj768',''),(2,'user2','adfkhgfjuytiuy8762872674kbj768',''),(1441902293,'user3','2sc53#6g@7hcd','2s.gFhk3xGxoA');
 /*!40000 ALTER TABLE `opds_users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `opds_storages`
+--
+
+DROP TABLE IF EXISTS `opds_storages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `opds_storages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `mountpoint` varchar(200) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opds_storages`
+--
+
+LOCK TABLES `opds_storages` WRITE;
+/*!40000 ALTER TABLE `opds_storages` DISABLE KEYS */;
+INSERT INTO `opds_storages` VALUES (1,'storages/epub0/','e'),(2,'storages/image0/','i');
+/*!40000 ALTER TABLE `opds_storages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `opds_files`
+--
+
+DROP TABLE IF EXISTS `opds_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `opds_files` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(10) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `storage_id` int(11) NOT NULL,
+  `path` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opds_files`
+--
+
+LOCK TABLES `opds_files` WRITE;
+/*!40000 ALTER TABLE `opds_files` DISABLE KEYS */;
+INSERT INTO `opds_files` VALUES (1,'e','ffff.epub',1,''),(2,'e','dddd.epub',1,'');
+/*!40000 ALTER TABLE `opds_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `opds_user_to_file`
+--
+
+DROP TABLE IF EXISTS `opds_user_to_file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `opds_user_to_file` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `book_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opds_user_to_file`
+--
+
+LOCK TABLES `opds_user_to_file` WRITE;
+/*!40000 ALTER TABLE `opds_user_to_file` DISABLE KEYS */;
+INSERT INTO `opds_user_to_file` VALUES (1,1,1),(2,1,2);
+/*!40000 ALTER TABLE `opds_user_to_file` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -217,4 +295,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-16 20:12:46
+-- Dump completed on 2015-09-16 23:44:01
