@@ -6,7 +6,7 @@ class Book_model extends CI_Model {
     }
 
     public function get_book_all() {
-        $oc_get_all_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1";
+        $oc_get_all_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image as image, p.buy_link as buy_link, p.alternate_link as alternate_link from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1";
         $query = $this->db->query($oc_get_all_sql);
         // $query = $this->db->query('select * from opds_books');
         return $query->result_array();
@@ -22,7 +22,7 @@ class Book_model extends CI_Model {
         return $query->result_array();
     }
     public function get_book_by_id($id) {
-            $oc_get_by_id_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1 and p.product_id=$id";
+            $oc_get_by_id_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image as image, p.buy_link as buy_link, p.alternate_link as alternate_link from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1 and p.product_id=$id";
             $query = $this->db->query($oc_get_by_id_sql);
             // $query = $this->db->query("select * from opds_books where id=$id");
             return $query->result_array();

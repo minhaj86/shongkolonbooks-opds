@@ -106,8 +106,8 @@ class Books extends REST_Controller {
                 self::_addLink($xml,$entry,"alternate",self::_get_base_uri()."/test/api/books/item/".$e['id'],"application/xml");
             }
             // self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");
-            self::_addLink($xml,$entry,"http://opds-spec.org/image",self::_get_base_uri().$e['main_image'],"image/jpeg");
-            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",self::_get_base_uri().$e['thumb_image'],"image/jpeg");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image",self::_get_base_uri().$e['image'],"image/jpeg");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",self::_get_base_uri().$e['image'],"image/jpeg");
             $linkbuy = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/buy",self::_get_base_uri().$e['buy_link'],"text/html");
             $price = self::_addChildElementOpds($xml, 'price', '0');
             $price->setAttribute('currencycode', 'USD');
