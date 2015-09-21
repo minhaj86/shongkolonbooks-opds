@@ -100,8 +100,8 @@ class Books extends REST_Controller {
             self::_addChildElementDcterms($xml, 'language', $e['language'], $entry);
             self::_addChildElementDcterms($xml, 'publisher', $e['publisher'], $entry);
             self::_addChildElementDcterms($xml, 'issued', $e['issue_ts'], $entry);
-            self::_addChildElementDcterms($xml, 'extent', $e['no_of_pages'], $entry);
-            self::_addChildElementDcterms($xml, 'extent', $e['size'], $entry);
+            self::_addChildElementDcterms($xml, 'extent', $e['page']." Pages", $entry);
+            self::_addChildElementDcterms($xml, 'extent', $e['size'] . " Bytes", $entry);
             if (!$is_alternate) {
                 self::_addLink($xml,$entry,"alternate",self::_get_base_uri()."/test/api/books/item/".$e['id'],"application/xml");
             }

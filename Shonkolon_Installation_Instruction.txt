@@ -1,0 +1,75 @@
+===== Shonkolon Installation Instruction ====
+
+1. Install OpenCart:  http://www.opencart.com/
+2. Install VQMOD: https://github.com/vqmod/vqmod/wiki/Installing-vQmod-on-OpenCart
+3. Install Author Module: 
+4. Add column in oc_customer table |||ALTER TABLE oc_customer ADD COLUMN password_cleartext VARCHAR(200);|||
+5. Change customer.php in opencart catalog/model/account/ line 16 ||| password_cleartext = '".$data['password']."', ||| 
+6. Install REST-API Module: 
+7. Import the SQL file for OPDS
+8. Add trigger like this:
+
+================================================
+CREATE TRIGGER `oc_customer_to_opds_users_create` AFTER INSERT ON `oc_customer`
+ FOR EACH ROW BEGIN 
+ INSERT INTO opds_users SET id=NEW.customer_id , username=NEW.email , password=NEW.password_cleartext;
+END
+=================================================
+
+CREATE TRIGGER `oc_product_to_opds_books_create` AFTER INSERT ON `oc_product`
+ FOR EACH ROW BEGIN 
+ INSERT INTO opds_books SET 
+  id = NEW.product_id,
+  title = NEW.model,
+  isbn = NEW.isbn,
+  publish_ts = NEW.date_published,
+  update_ts = NEW.date_modified,
+  language = NEW.book_language,
+  publisher_id = NEW.manufacturer_id,
+  issue_ts = NEW.date_added,
+  no_of_pages = NEW.page,
+  size = NEW.size,
+  thumb_image = NEW.image;
+END
+
+USE `opencart`;
+DELIMITER $$
+CREATE TRIGGER `oc_product_to_author_AINS` AFTER INSERT ON `oc_product_to_author` FOR EACH ROW
+BEGIN
+INSERT INTO opds_book_to_author SET
+book_id=NEW.product_id,
+author_id=NEW.author_id;
+END$$ 
+
+USE `opencart`;
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` TRIGGER `oc_product_to_author_AINS` AFTER INSERT ON `oc_product_to_author` FOR EACH ROW
+BEGIN
+INSERT INTO opds_book_to_author SET
+book_id=NEW.product_id,
+author_id=NEW.author_id;
+END
+
+
+USE `opencart`;
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS opencart.oc_manufacturer_to_opds_publishers_create$$
+USE `opencart`$$
+
+
+CREATE TRIGGER `oc_manufacturer_to_opds_publishers_create` AFTER INSERT ON `oc_manufacturer` FOR EACH ROW
+BEGIN
+INSERT INTO opds_publishers SET
+id=NEW.manufacturer_id,
+name=NEW.name;
+END$$
+DELIMITER ;
+
+
+
+
+
+
+

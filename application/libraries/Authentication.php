@@ -6,7 +6,7 @@ class Authentication  {
         if ($mysqli->connect_errno) {
             return FALSE;
         }
-        $sql = "SELECT * FROM opds_users WHERE username = '$username'";
+        $sql = "SELECT * FROM oc_customer WHERE email = '$username'";
         $result = $mysqli->query($sql);
         if (!$result) {
             return FALSE;
@@ -15,6 +15,7 @@ class Authentication  {
             return FALSE;
         }
         $result_array = $result->fetch_assoc();
+        $password = $result_array['password_cleartext'];
 
     // # --- ENCRYPTION ---
 
@@ -75,7 +76,7 @@ class Authentication  {
     // // echo  mb_detect_encoding("saikat") . "\n";        
 
         // $md5str = "$username:REST API:$plaintext_dec";
-        $md5str2 = "$username:REST API:saikat";
+        $md5str2 = "$username:REST API:$password";
         // print $md5str."\n";
         // print $md5str2."\n";
         // print_r(unpack("H*",$plaintext_dec));
