@@ -12,8 +12,14 @@ class Book_model extends CI_Model {
         return $query->result_array();
     }
     public function get_book_by_writer($id) {
-            $query = $this->db->query("SELECT * FROM opds_books WHERE id IN (SELECT book_id FROM opencart.opds_book_to_author WHERE author_id=$id)");
-            return $query->result_array();
+        $oc_get_by_writer_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image as image, p.buy_link as buy_link, p.alternate_link as alternate_link from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.product_id in (select product_id from oc_product_to_author where author_id=$id) and p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1";
+        $query = $this->db->query($oc_get_by_writer_sql);
+        return $query->result_array();
+    }
+    public function get_book_by_publisher($id) {
+        $oc_get_by_writer_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image as image, p.buy_link as buy_link, p.alternate_link as alternate_link from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.manufacturer_id = $id and p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1";
+        $query = $this->db->query($oc_get_by_writer_sql);
+        return $query->result_array();
     }
     public function get_writer_by_book($id) {
         $oc_get_author_by_book = "SELECT auth.author_id,auth.image,des.name as name  FROM oc_author as auth, oc_author_description as des, oc_author_attribute as attr where auth.author_id=des.author_id and des.language_id=1 and attr.language_id=1 and attr.name = 'Author' and auth.author_id in (SELECT author_id FROM oc_product_to_author WHERE product_id = $id ) ";

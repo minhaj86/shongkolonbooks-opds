@@ -30,15 +30,11 @@ class Catalogs extends REST_Controller {
         $this->methods['user_delete']['limit'] = 50; // 50 requests per hour per user/key
     }
 
-    public function catagory_get($name)
+
+    public function bywriter_get()
     {
-        $this->load->model('catalog_catagory_model');
-            $news = $this->catalog_catagory_model->get_catalog_by_type($name);
-            // print_r($news);
-            $id = $news['id'];
-        $this->load->model('catalog_subcatagory_model');
-            $newsl = $this->catalog_subcatagory_model->get_catalog($id);
-            // print_r($newsl);
+        $this->load->model('catalog_writer_model');
+        $newsl = $this->catalog_writer_model->get_catalog();
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->formatOutput = true;
         $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
@@ -65,37 +61,131 @@ class Catalogs extends REST_Controller {
         $feed->appendChild( $linkrelated );
 
         $xml->appendChild($feed);
-// print_r($newsl);
-      foreach ( $newsl as $e ) {
-        $entry = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:entry");
-        $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['id']);
-        $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
-        // $summary = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:summary", $e['description']);
-        $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
-        $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api'.$e['link']);
-        $link->setAttribute("rel", "self");
-        $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
-        $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");
-        $content = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:content", "All Books from " . $e['name']);
-        $content->setAttribute("type", 'text');
+        foreach ( $newsl as $e ) {
+            $entry = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:entry");
+            $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['author_id']);
+            $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
+            $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
+            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/writer/'.$e['author_id']);
+            $link->setAttribute("rel", "self");
+            $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
+            $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");
+            $content = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:content", "All Books from writer " . $e['name']);
+            $content->setAttribute("type", 'text');
 
-        // $category->setAttribute("term", $e['type']);
-        // $category->setAttribute("scheme", "http://shonkolon.com/category/catalogs/types");
-        // $category->setAttribute("label", $e['name']);
-
-        $entry->appendChild($id);
-        $entry->appendChild($title);
-        // $entry->appendChild($summary);
-        $entry->appendChild($link);
-        $entry->appendChild($content);
-
-        $feed->appendChild($entry);
-
-      }
+            $entry->appendChild($id);
+            $entry->appendChild($title);
+            $entry->appendChild($link);
+            $entry->appendChild($content);
+            $feed->appendChild($entry);
+        }
         $output = $xml->saveXML();
         $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
-    public function catagories_get()
+
+    public function bypublisher_get()
+    {
+        $this->load->model('catalog_publisher_model');
+        $newsl = $this->catalog_publisher_model->get_catalog();
+        $xml = new DOMDocument( "1.0", "UTF-8" );
+        $xml->formatOutput = true;
+        $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
+        $linkself = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkself->setAttribute("rel", "self");
+        $linkself->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkself->setAttribute("href", $this->input->server('REQUEST_URI'));
+        $linkup = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkup->setAttribute("rel", "up");
+        $linkup->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkup->setAttribute("href", $this->input->server('REQUEST_URI'));
+        $linkstart = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkstart->setAttribute("rel", "start");
+        $linkstart->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkstart->setAttribute("href", $this->input->server('REQUEST_URI'));
+        $linkrelated = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkrelated->setAttribute("rel", "related");
+        $linkrelated->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkrelated->setAttribute("href", $this->input->server('REQUEST_URI'));
+
+        $feed->appendChild( $linkself );
+        $feed->appendChild( $linkstart );
+        $feed->appendChild( $linkup );
+        $feed->appendChild( $linkrelated );
+
+        $xml->appendChild($feed);
+        foreach ( $newsl as $e ) {
+            $entry = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:entry");
+            $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['manufacturer_id']);
+            $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
+            $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
+            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/publisher/'.$e['manufacturer_id']);
+            $link->setAttribute("rel", "self");
+            $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
+            $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");
+            $content = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:content", "All Books from publisher " . $e['name']);
+            $content->setAttribute("type", 'text');
+
+            $entry->appendChild($id);
+            $entry->appendChild($title);
+            $entry->appendChild($link);
+            $entry->appendChild($content);
+            $feed->appendChild($entry);
+        }
+        $output = $xml->saveXML();
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
+
+    public function bycategory_get() 
+    {
+        $this->load->model('catalog_subcatagory_model');
+        $newsl = $this->catalog_subcatagory_model->get_catalog();
+        $xml = new DOMDocument( "1.0", "UTF-8" );
+        $xml->formatOutput = true;
+        $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
+        $linkself = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkself->setAttribute("rel", "self");
+        $linkself->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkself->setAttribute("href", $this->input->server('REQUEST_URI'));
+        $linkup = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkup->setAttribute("rel", "up");
+        $linkup->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkup->setAttribute("href", $this->input->server('REQUEST_URI'));
+        $linkstart = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkstart->setAttribute("rel", "start");
+        $linkstart->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkstart->setAttribute("href", $this->input->server('REQUEST_URI'));
+        $linkrelated = $xml->createElementNS( "http://www.w3.org/2005/Atom",  "atom:link");
+        $linkrelated->setAttribute("rel", "related");
+        $linkrelated->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=navigation");
+        $linkrelated->setAttribute("href", $this->input->server('REQUEST_URI'));
+
+        $feed->appendChild( $linkself );
+        $feed->appendChild( $linkstart );
+        $feed->appendChild( $linkup );
+        $feed->appendChild( $linkrelated );
+
+        $xml->appendChild($feed);
+        foreach ( $newsl as $e ) {
+            $entry = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:entry");
+            $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['category_id']);
+            $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
+            $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
+            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/category/'.$e['category_id']);
+            $link->setAttribute("rel", "self");
+            $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
+            $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");
+            $content = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:content", "All Books of category " . $e['name']);
+            $content->setAttribute("type", 'text');
+            $entry->appendChild($id);
+            $entry->appendChild($title);
+            $entry->appendChild($link);
+            $entry->appendChild($content);
+            $feed->appendChild($entry);
+            }
+        $output = $xml->saveXML();
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
+    public function categories_get()
     {
         $type = $this->get('type');
         $this->load->model('catalog_catagory_model');

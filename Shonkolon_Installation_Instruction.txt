@@ -6,8 +6,7 @@
 4. Add column in oc_customer table |||ALTER TABLE oc_customer ADD COLUMN password_cleartext VARCHAR(200);|||
 5. Change customer.php in opencart catalog/model/account/ line 16 ||| password_cleartext = '".$data['password']."', ||| 
 6. Install REST-API Module: 
-7. Import the SQL file for OPDS
-8. Add columns like this:
+7. Add columns like this:
 
 ALTER TABLE `opencart`.`oc_product` 
 ADD COLUMN `alternate_link` VARCHAR(45) NULL AFTER `date_modified`,
