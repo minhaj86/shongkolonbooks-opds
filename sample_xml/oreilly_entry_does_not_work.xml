@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opds="http://opds-spec.org/2010/catalog">
+    <id>http://opds.oreilly.com/product/9781449340360.EBOOK</id>
+    <title>Python Cookbook, 3rd Edition</title>
+    <updated>2014-04-10T04:02:33.478710+00:00</updated>
+    <dc:issued>2013-05-10</dc:issued>
+    <author>
+      <name>David Beazley</name>
+    </author><author>
+      <name>Brian K. Jones</name>
+    </author>
+    <content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml"><p>If you need help writing programs in Python 3, or want to update older Python 2 code, this book is just the ticket. Packed with practical recipes written and tested with Python 3.3, this unique cookbook is for experienced Python programmers who want to focus on modern tools and idioms.</p></div></content>
+    <link type="text/html" rel="http://opds-spec.org/acquisition/buy" href="/buy/9781449340360.EBOOK">
+      <opds:price currencycode="USD">39.99</opds:price>
+    </link>
+    <link href="http://covers.oreilly.com/images/0636920027072/bkt.gif" type="image/gif" rel="http://opds-spec.org/thumbnail" />
+    <link href="http://covers.oreilly.com/images/0636920027072/cat.gif" type="image/gif" rel="http://opds-spec.org/cover" />
+    <dc:identifier>urn:isbn:9781449340360</dc:identifier>
+    <dc:publisher>O'Reilly Media</dc:publisher>
+    <rights>Copyright 2013, David Beazley, Brian Jones</rights>
+    <dc:language>en</dc:language>
+  </entry>

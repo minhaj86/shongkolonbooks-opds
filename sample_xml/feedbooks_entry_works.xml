@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opds="http://opds-spec.org/2010/catalog">
+<title>Piper's Proposal</title>
+<id>http://www.feedbooks.com/userbook/36064</id>
+<author>
+  <name>Lexie X</name>
+  <uri>http://www.feedbooks.com/user/195642/profile#Lexie%20X</uri>
+</author>
+<published>2015-09-19T17:49:21Z</published>
+<updated>2015-09-19T17:49:21Z</updated>
+<dcterms:language>en</dcterms:language>
+<dcterms:issued>2015</dcterms:issued>
+<summary>College is out for the summer, and Piper's finally worked up the courage to ask Isabella to marry her. She takes the gorgeous blonde to the restaurant where they had their first date. Nothing can go wrong, right? Isabella loves her, and she loves ...</summary>
+<dcterms:extent>4,377 words</dcterms:extent>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC000000" label="Fiction"/>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC005000" label="Erotica"/>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC060000N" label="LGBT"/>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC018000" label="Lesbian"/>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC027000" label="Romance"/>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC027010" label="Adult"/>
+<category scheme="http://www.feedbooks.com/categories" term="FBFIC027020" label="Contemporary"/>
+<link type="text/html" title="View on Feedbooks" href="http://www.feedbooks.com/userbook/36064" rel="alternate"/>
+<link type="application/epub+zip" href="http://www.feedbooks.com/userbook/36064.epub" rel="http://opds-spec.org/acquisition"/>
+<link type="application/x-mobipocket-ebook" href="http://www.feedbooks.com/userbook/36064.mobi" rel="http://opds-spec.org/acquisition"/>
+<link type="application/pdf" href="http://www.feedbooks.com/userbook/36064.pdf" rel="http://opds-spec.org/acquisition"/>
+<link type="image/jpeg" href="http://covers.feedbooks.net/userbook/36064.jpg?size=large&amp;t=1442684961" rel="http://opds-spec.org/image"/>
+<link type="image/jpeg" href="http://covers.feedbooks.net/userbook/36064.jpg?t=1442684961" rel="http://opds-spec.org/image/thumbnail"/>
+<link type="application/atom+xml;type=entry;profile=opds-catalog" title="Full entry" href="http://www.feedbooks.com/userbook/36064.atom" rel="alternate"/>
+</entry>
