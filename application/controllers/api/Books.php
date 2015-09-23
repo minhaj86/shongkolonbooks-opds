@@ -26,6 +26,7 @@ class Books extends REST_Controller {
         // Configure limits on our controller methods
         // Ensure you have created the 'limits' table and enabled 'limits' within application/config/rest.php
         $this->methods['books_get']['limit'] = 500; // 500 requests per hour per user/key
+        $this->config->load('opds', FALSE, TRUE);
     }
 
     public function file_get($id) {
@@ -122,7 +123,7 @@ class Books extends REST_Controller {
             self::_addChildElementDcterms($xml, 'extent', $e['page']." Pages", $entry);
             self::_addChildElementDcterms($xml, 'extent', $e['size'] . " Bytes", $entry);
             if (!$is_alternate) {
-                self::_addLink($xml,$entry,"alternate",self::_get_base_uri()."/test/api/books/item/".$e['id'],"application/xml");
+                self::_addLink($xml,$entry,"alternate",self::_get_base_uri().$this->config->item('book_item_relative_path').$e['id'],"application/xml");
             }
             // self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");
             self::_addLink($xml,$entry,"http://opds-spec.org/image",self::_get_base_uri().$e['image'],"image/jpeg");

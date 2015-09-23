@@ -28,6 +28,7 @@ class Catalogs extends REST_Controller {
         $this->methods['user_get']['limit'] = 500; // 500 requests per hour per user/key
         $this->methods['user_post']['limit'] = 100; // 100 requests per hour per user/key
         $this->methods['user_delete']['limit'] = 50; // 50 requests per hour per user/key
+        $this->config->load('opds', FALSE, TRUE);
     }
 
 
@@ -67,6 +68,7 @@ class Catalogs extends REST_Controller {
             $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
             $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
             $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/writer/'.$e['author_id']);
+            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').$this->config->item('book_by_writer_relative_path').$e['author_id']);
             $link->setAttribute("rel", "self");
             $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
             $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");
@@ -118,7 +120,7 @@ class Catalogs extends REST_Controller {
             $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['manufacturer_id']);
             $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
             $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
-            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/publisher/'.$e['manufacturer_id']);
+            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').$this->config->item('book_by_publisher_relative_path').$e['manufacturer_id']);
             $link->setAttribute("rel", "self");
             $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
             $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");
@@ -170,7 +172,7 @@ class Catalogs extends REST_Controller {
             $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['category_id']);
             $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
             $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
-            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/category/'.$e['category_id']);
+            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').$this->config->item('book_by_category_relative_path').$e['category_id']);
             $link->setAttribute("rel", "self");
             $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");
             $category = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:category");

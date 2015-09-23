@@ -16,3 +16,6 @@ ADD COLUMN `main_image` VARCHAR(45) NULL AFTER `file_id`,
 ADD COLUMN `thumb_image` VARCHAR(45) NULL AFTER `main_image`;
 
 
+8. Change the urls specified in opds.php under application/config/ as per server url paths.
+
+9. Checkout the opds2 repo into opds/ forlder of your apache root directory.
