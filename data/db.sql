@@ -91,7 +91,7 @@ CREATE TABLE `opds_book_to_author` (
   `book_id` int(11) NOT NULL,
   `author_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +100,7 @@ CREATE TABLE `opds_book_to_author` (
 
 LOCK TABLES `opds_book_to_author` WRITE;
 /*!40000 ALTER TABLE `opds_book_to_author` DISABLE KEYS */;
-INSERT INTO `opds_book_to_author` VALUES (1,1,1),(2,1,2),(3,2,3),(4,3,2);
+INSERT INTO `opds_book_to_author` VALUES (1,1,1),(2,1,2),(3,2,3),(4,3,2),(5,50,3),(6,50,1),(7,53,2),(8,53,2),(9,52,3),(10,57,1),(11,54,3),(12,55,2),(13,56,3);
 /*!40000 ALTER TABLE `opds_book_to_author` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,7 +153,7 @@ CREATE TABLE `opds_catalogs` (
 
 LOCK TABLES `opds_catalogs` WRITE;
 /*!40000 ALTER TABLE `opds_catalogs` DISABLE KEYS */;
-INSERT INTO `opds_catalogs` VALUES (1,'all','All Books','/test/api/catalogs/catagory/all','All'),(2,'writer','By Writer','/test/api/catalogs/catagory/writer','Writer'),(3,'publisher','By Publisher','/test/api/catalogs/catagory/publisher','Publisher'),(4,'bestseller','Best Seller','/test/api/catalogs/catagory/bestseller','Best Seller'),(5,'featured','Featured','/test/api/catalogs/catagory/featured','Featured'),(6,'latest','Latest','/test/api/catalogs/catagory/latest','Latest');
+INSERT INTO `opds_catalogs` VALUES (1,'all','All Books','/test/api/catalogs/all','All'),(2,'writer','By Writer','/test/api/catalogs/bywriter','Writer'),(3,'publisher','By Publisher','/test/api/catalogs/bycategory','By Category'),(4,'bestseller','Best Seller','/test/api/catalogs/catagory/bestseller','Best Seller'),(5,'featured','Featured','/test/api/catalogs/catagory/featured','Featured'),(6,'latest','Latest','/test/api/catalogs/catagory/latest','Latest');
 /*!40000 ALTER TABLE `opds_catalogs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +192,7 @@ DROP TABLE IF EXISTS `opds_users`;
 CREATE TABLE `opds_users` (
   `id` int(11) NOT NULL,
   `username` varchar(100) NOT NULL,
-  `salt` varchar(100) NOT NULL DEFAULT 'adfkhgfjuytiuy8762872674kbj768',
+  `salt` varchar(100) DEFAULT 'adfkhgfjuytiuy8762872674kbj768',
   `password` varchar(500) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
@@ -205,7 +205,7 @@ CREATE TABLE `opds_users` (
 
 LOCK TABLES `opds_users` WRITE;
 /*!40000 ALTER TABLE `opds_users` DISABLE KEYS */;
-INSERT INTO `opds_users` VALUES (1,'user1','adfkhgfjuytiuy8762872674kbj768',''),(2,'user2','adfkhgfjuytiuy8762872674kbj768',''),(1441902293,'user3','2sc53#6g@7hcd','2s.gFhk3xGxoA');
+INSERT INTO `opds_users` VALUES (0,'bbbbbbbbb@bbb.com','d1c86ff1c','a81fb8a000f1e808bddd1d0804bc48289fc49578'),(1,'user1','adfkhgfjuytiuy8762872674kbj768',''),(2,'user2','adfkhgfjuytiuy8762872674kbj768',''),(9,'asdf@gmail.com','adfkhgfjuytiuy8762872674kbj768','1234'),(1441902293,'user3','2sc53#6g@7hcd','2s.gFhk3xGxoA');
 /*!40000 ALTER TABLE `opds_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -257,7 +257,7 @@ CREATE TABLE `opds_files` (
 
 LOCK TABLES `opds_files` WRITE;
 /*!40000 ALTER TABLE `opds_files` DISABLE KEYS */;
-INSERT INTO `opds_files` VALUES (1,'e','ffff.epub',1,''),(2,'e','dddd.epub',1,'');
+INSERT INTO `opds_files` VALUES (1,'e','5.epub',1,''),(2,'e','7.epub',1,'');
 /*!40000 ALTER TABLE `opds_files` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -285,6 +285,62 @@ LOCK TABLES `opds_user_to_file` WRITE;
 INSERT INTO `opds_user_to_file` VALUES (1,1,1),(2,1,2);
 /*!40000 ALTER TABLE `opds_user_to_file` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `opds_product_to_book_files`
+--
+
+DROP TABLE IF EXISTS `opds_product_to_book_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `opds_product_to_book_files` (
+  `product_id` int(11) NOT NULL,
+  `file_id` int(11) DEFAULT NULL,
+  `type` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opds_product_to_book_files`
+--
+
+LOCK TABLES `opds_product_to_book_files` WRITE;
+/*!40000 ALTER TABLE `opds_product_to_book_files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `opds_product_to_book_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `opds_logs`
+--
+
+DROP TABLE IF EXISTS `opds_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `opds_logs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uri` varchar(255) NOT NULL,
+  `method` varchar(6) NOT NULL,
+  `params` text,
+  `api_key` varchar(40) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  `time` int(11) NOT NULL,
+  `rtime` float DEFAULT NULL,
+  `authorized` varchar(1) NOT NULL,
+  `response_code` smallint(3) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `opds_logs`
+--
+
+LOCK TABLES `opds_logs` WRITE;
+/*!40000 ALTER TABLE `opds_logs` DISABLE KEYS */;
+INSERT INTO `opds_logs` VALUES (1,'api/books/category/61','get','a:2:{i:0;N;i:1;N;}','','127.0.0.1',1443038728,0.0545449,'1',200),(2,'api/books/category/6','get','a:2:{i:0;N;i:1;N;}','','127.0.0.1',1443038791,0.065367,'1',200),(3,'api/books/category/33','get','a:2:{i:0;N;i:1;N;}','','192.168.2.3',1443038842,0.051491,'1',200),(4,'api/books/category/17','get','a:2:{i:0;N;i:1;N;}','','192.168.2.3',1443038857,0.0590308,'1',200),(5,'api/books/category/61','get','a:2:{i:0;N;i:1;N;}','','127.0.0.1',1443039262,0.078342,'1',200);
+/*!40000 ALTER TABLE `opds_logs` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -295,4 +351,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-09-16 23:44:01
+-- Dump completed on 2015-09-24  3:35:36
