@@ -75,6 +75,25 @@ class Books extends REST_Controller {
         $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
 
+    public function category_get($id)
+    {
+        $this->load->model('book_model');
+        $news = $this->book_model->get_book_by_category($id);
+        $xml = new DOMDocument( "1.0", "UTF-8" );
+        $xml->formatOutput = true;
+        $feed = $xml->createElementNS( "http://www.w3.org/2005/Atom", "atom:feed" );
+        self::_addAcquisitionLink($xml,$feed,"self",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"up",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"start",$this->input->server('REQUEST_URI'));
+        self::_addAcquisitionLink($xml,$feed,"related",$this->input->server('REQUEST_URI'));
+        $xml->appendChild($feed);
+        foreach ( $news as $e ) {
+            self::_add_book_entry($xml,$feed,$e);
+        }
+        $output = $xml->saveXML();
+        $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
+    }
+
     public function publisher_get($id)
     {
         $this->load->model('book_model');

@@ -16,6 +16,11 @@ class Book_model extends CI_Model {
         $query = $this->db->query($oc_get_by_writer_sql);
         return $query->result_array();
     }
+    public function get_book_by_category($id) {
+        $oc_get_by_writer_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image as image, p.buy_link as buy_link, p.alternate_link as alternate_link from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.product_id in (SELECT pc.product_id FROM oc_category as c, oc_category_description as d, oc_product_to_category as pc where c.category_id=d.category_id and pc.category_id=c.category_id and c.category_id=$id) and p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1";
+        $query = $this->db->query($oc_get_by_writer_sql);
+        return $query->result_array();
+    }
     public function get_book_by_publisher($id) {
         $oc_get_by_writer_sql = "SELECT p.product_id as id,d.name as title,p.isbn,p.date_published as publish_ts,p.date_modified as update_ts,p.book_language as language,p.manufacturer_id,m.name as publisher,p.date_added as issue_ts,d.description as summary,p.page,p.size,p.image as image, p.buy_link as buy_link, p.alternate_link as alternate_link from oc_product as p, oc_product_description as d, oc_manufacturer as m  where p.manufacturer_id = $id and p.product_id = d.product_id and p.manufacturer_id=m.manufacturer_id and d.language_id=1";
         $query = $this->db->query($oc_get_by_writer_sql);
