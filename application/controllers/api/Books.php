@@ -29,12 +29,48 @@ class Books extends REST_Controller {
         $this->config->load('opds', FALSE, TRUE);
     }
 
-    public function file_get($id) {
-        // print_r($this->input->request_headers());
+    public function fileold_get($id) {
+        print_r($this->input->request_headers());
+        // log_message('info', 'Request headers: '.$this->input->request_headers());
+
+        foreach ($this->input->request_headers() as $key => $value) {
+            log_message('info', "Request header: $key => $value");
+        }
         $this->load->model('book_model');
         $news = $this->book_model->get_file_by_book_id($id);
-        $filepath = $news[0]['filepath'];
-        $this->output->set_content_type('application/epub+zip')->set_output(file_get_contents($filepath));
+        print_r($news);
+        $this->load->helper('array');
+        $file_entry = element(0, $news, null);
+        if (!$file_entry) {
+            $this->output->set_status_header(500);
+            return;
+        }
+        $filepath = element('filepath', $file_entry, null);
+        if (!$filepath) {
+            $this->output->set_status_header(500);
+            return;
+        }
+        $this->output->set_content_type('application/epub+zip');
+        $this->output->set_header('Content-Disposition: attachment; filename="'.$id.'.epub"');
+        $this->output->set_output(file_get_contents($filepath));
+    }
+
+    public function file_get($id) {
+        $this->load->helper('download');
+        $this->load->model('book_model');
+        $news = $this->book_model->get_file_by_book_id($id);
+        $this->load->helper('array');
+        $file_entry = element(0, $news, null);
+        if (!$file_entry) {
+            $this->output->set_status_header(500);
+            return;
+        }
+        $filepath = element('filepath', $file_entry, null);
+        if (!$filepath) {
+            $this->output->set_status_header(500);
+            return;
+        }
+        force_download($filepath, NULL);
     }
 
     public function all_get()
@@ -120,12 +156,16 @@ class Books extends REST_Controller {
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->formatOutput = true;
         $e = $news[0];
-        self::_add_book_entry($xml,$xml,$e,1);
+        $email = self::_get_user_email();
+        $this->load->model('user_model');
+        $subscribed_books = $this->user_model->get_customer_book_subscription_by_email($email);
+        // print_r($subscribed_books);
+        self::_add_book_entry($xml,$xml,$e,1,$subscribed_books);
         $output = $xml->saveXML();
         $this->response($output, REST_Controller::HTTP_OK); // OK (200) being the HTTP response code
     }
 
-    private function _add_book_entry($xml,$feed,$e,$is_alternate=null) {
+    private function _add_book_entry($xml,$feed,$e,$is_alternate=null,$subscribed_books=null) {
             $entry = self::_addChildElementAtom($xml, 'entry', null, $feed);
             self::_addChildElementAtom($xml, 'id', "urn:uuid:".$e['id'], $entry);
             self::_addChildElementAtom($xml, 'title', $e['title'], $entry);
@@ -142,21 +182,40 @@ class Books extends REST_Controller {
             self::_addChildElementDcterms($xml, 'extent', $e['page']." Pages", $entry);
             self::_addChildElementDcterms($xml, 'extent', $e['size'] . " Bytes", $entry);
             if (!$is_alternate) {
-                self::_addLink($xml,$entry,"alternate",self::_get_base_uri().$this->config->item('book_item_relative_path').$e['id'],"application/xml");
+                self::_addLink($xml,$entry,"alternate",self::_get_base_uri().$this->config->item('book_item_relative_path').$e['id'],"application/atom+xml;type=entry;profile=opds-catalog");
+            } else {
+                self::_addChildElementAtom($xml, 'content', $e['summary'], $entry);
+                self::_addLink($xml,$entry,"self",self::_get_base_uri().$this->config->item('book_item_relative_path').$e['id'],"application/atom+xml;type=entry;profile=opds-catalog");
             }
-            // self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");
-            self::_addLink($xml,$entry,"http://opds-spec.org/image",self::_get_base_uri().$e['image'],"image/jpeg");
-            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",self::_get_base_uri().$e['image'],"image/jpeg");
-            $linkbuy = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/buy",self::_get_base_uri().$e['buy_link'],"text/html");
-            $price = self::_addChildElementOpds($xml, 'price', '0');
-            $price->setAttribute('currencycode', 'USD');
-            $linkbuy->appendChild($price);
-            $indirectAcquisition  = self::_addChildElementOpds($xml, 'indirectAcquisition');
-            $indirectAcquisition->setAttribute('type', 'application/vnd.adobe.adept+xml');
-            $indirectAcquisitionepub  = self::_addChildElementOpds($xml, 'indirectAcquisition');
-            $indirectAcquisitionepub->setAttribute('type', 'application/epub+zip');
-            $indirectAcquisition->appendChild($indirectAcquisitionepub);
-            $linkbuy->appendChild($indirectAcquisition);
+            // self::_addLink($xml,$entry,"alternate",$e['alternate_link'],"text/html");opencart_image_relative_path
+            self::_addLink($xml,$entry,"http://opds-spec.org/image",self::_get_base_uri().$this->config->item('opencart_image_relative_path').$e['image'],"image/jpeg");
+            self::_addLink($xml,$entry,"http://opds-spec.org/image/thumbnail",self::_get_base_uri().$this->config->item('opencart_image_relative_path').$e['image'],"image/jpeg");
+            $is_purchased = 0;
+            if (isset($subscribed_books)) {
+                foreach ($subscribed_books as $key => $value) {
+                    if($value['product_id'] == $e['id']) {
+                        $is_purchased = 1;
+                        break;
+                    }
+                }
+            }
+            if($is_purchased) {
+                self::_addLink($xml,$entry,"http://opds-spec.org/acquisition",self::_get_base_uri().$this->config->item('book_file_relative_path').$e['id'],"application/epub+zip");
+            } else {
+                // self::_addLink($xml,$entry,"http://opds-spec.org/acquisition",self::_get_base_uri().$this->config->item('book_file_relative_path').$e['id'],"application/epub+zip");
+                $linksample = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/sample",self::_get_base_uri().$e['buy_link'],"application/epub+zip");
+                // self::_addLink($xml,$entry,"alternate",self::_get_base_uri().$e['buy_link'],"text/html");
+                $linkbuy = self::_addLink($xml,$entry,"http://opds-spec.org/acquisition/buy",self::_get_base_uri().$e['buy_link'],"text/html");
+                $price = self::_addChildElementOpds($xml, 'price', $e['price']);
+                $price->setAttribute('currencycode', 'USD');
+                $linkbuy->appendChild($price);
+                // $indirectAcquisition  = self::_addChildElementOpds($xml, 'indirectAcquisition');
+                // $indirectAcquisition->setAttribute('type', 'application/vnd.adobe.adept+xml');
+                $indirectAcquisitionepub  = self::_addChildElementOpds($xml, 'indirectAcquisition');
+                $indirectAcquisitionepub->setAttribute('type', 'application/epub+zip');
+                $linkbuy->appendChild($indirectAcquisitionepub);
+            }
+            // $linkbuy->appendChild($indirectAcquisition);
             $auths = $this->book_model->get_writer_by_book($e['id']);
             foreach ( $auths as $a ) {
                 self::_add_author($xml,$entry,$a);
@@ -164,8 +223,33 @@ class Books extends REST_Controller {
             return $entry;
     }
 
+    public function playground_get() {
+        // $subject = "abcdef";
+        // $pattern = '/def/';
+        // preg_match($pattern, $subject, $matches);
+        // print_r($matches);        
+        self::_get_userid();
+        // echo "asdfasdfasdfa\n\n";
+    }
+
     private function _get_base_uri() {
         return "http://".$this->input->server('SERVER_NAME')."";
+    }
+
+    private function _get_user_email() {
+        $auth = $this->input->get_request_header('Authorization');
+        foreach ($this->input->request_headers() as $key => $value) {
+            log_message('info', "Request header: $key => $value");
+        }
+        $h = $this->input->request_headers();
+        $auth = $h['Authorization'];
+        $pattern = '/Digest username="([^"]*)"/';
+        $found = preg_match($pattern, $auth, $matches);
+        // print_r($matches);
+        if($found and isset($matches[1])) {
+            $email = $matches[1];
+        }        
+        return $email;
     }
 
     private function _add_author($xml,$entry,$a) {

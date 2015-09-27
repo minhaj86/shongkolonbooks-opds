@@ -9,5 +9,10 @@ $config['book_by_publisher_relative_path'] = '/test/api/books/publisher/';
 
 $config['book_by_category_relative_path'] = '/test/api/books/category/';
 
+$config['book_file_relative_path'] = '/test/api/books/file/';
+
+$config['book_buy_relative_path'] = '/test/api/books/buy/';
+
 $config['book_all_relative_path'] = '/test/api/books/item/';
 
+$config['opencart_image_relative_path'] = '/opencart/upload/image/';

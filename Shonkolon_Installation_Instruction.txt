@@ -15,6 +15,21 @@ ADD COLUMN `file_id` INT NULL AFTER `buy_link`,
 ADD COLUMN `main_image` VARCHAR(45) NULL AFTER `file_id`,
 ADD COLUMN `thumb_image` VARCHAR(45) NULL AFTER `main_image`;
 
+7.1. Add trigger like this (untested code) 
+DELIMITER //
+create trigger abc for update on oc_order
+for each row
+BEGIN
+INSERT INTO opds_customer_book_subscription (customer_id,product_id,purchase_ts)
+SELECT o.customer_id as customer_id, op.product_id as product_id, now() as purchase_ts 
+FROM oc_order as o,oc_order_product as op 
+WHERE o.order_id=op.order_id AND o.order_id=1 
+AND o.order_status_id IN 
+(SELECT order_status_id FROM oc_order_status WHERE name IN ('Processing','Shipped','Complete'));
+END;
+
+DELIMITER ;
+
 
 8. Change the urls specified in opds.php under application/config/ as per server url paths.
 
