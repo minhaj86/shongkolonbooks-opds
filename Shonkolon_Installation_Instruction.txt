@@ -15,17 +15,27 @@ ADD COLUMN `file_id` INT NULL AFTER `buy_link`,
 ADD COLUMN `main_image` VARCHAR(45) NULL AFTER `file_id`,
 ADD COLUMN `thumb_image` VARCHAR(45) NULL AFTER `main_image`;
 
-7.1. Add trigger like this (untested code) 
+7.1. Add trigger like this (tested SQL) 
+
 DELIMITER //
-create trigger abc for update on oc_order
-for each row
-BEGIN
-INSERT INTO opds_customer_book_subscription (customer_id,product_id,purchase_ts)
-SELECT o.customer_id as customer_id, op.product_id as product_id, now() as purchase_ts 
-FROM oc_order as o,oc_order_product as op 
-WHERE o.order_id=op.order_id AND o.order_id=1 
-AND o.order_status_id IN 
-(SELECT order_status_id FROM oc_order_status WHERE name IN ('Processing','Shipped','Complete'));
+CREATE TRIGGER `abcd` AFTER UPDATE ON `oc_order`
+ FOR EACH ROW BEGIN
+  DECLARE done INT DEFAULT FALSE;
+  DECLARE customer_id INT;
+  DECLARE product_id INT;
+  DECLARE subscription_cursor CURSOR FOR SELECT o.customer_id as customer_id, op.product_id as product_id FROM oc_order as o,oc_order_product as op WHERE o.order_id=op.order_id AND o.order_id=NEW.order_id AND o.order_status_id IN (SELECT order_status_id FROM oc_order_status WHERE name IN ('Processing','Processed','Shipped','Complete'));
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  OPEN subscription_cursor;
+    ins_loop: LOOP
+        FETCH subscription_cursor INTO customer_id,product_id;
+        IF done THEN
+            LEAVE ins_loop;
+        END IF;
+        INSERT INTO opds_customer_book_subscription (customer_id, product_id, purchase_ts) VALUES (customer_id, product_id, NOW());
+    END LOOP;
+
+  CLOSE subscription_cursor;
 END;
 
 DELIMITER ;
