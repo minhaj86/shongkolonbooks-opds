@@ -18,7 +18,7 @@ ADD COLUMN `thumb_image` VARCHAR(45) NULL AFTER `main_image`;
 7.1. Add trigger like this (tested SQL) 
 
 DELIMITER //
-CREATE TRIGGER `abcd` AFTER UPDATE ON `oc_order`
+CREATE TRIGGER `oc_order_to_opds_user_book_subscription_update` AFTER UPDATE ON `oc_order`
  FOR EACH ROW BEGIN
   DECLARE done INT DEFAULT FALSE;
   DECLARE customer_id INT;
