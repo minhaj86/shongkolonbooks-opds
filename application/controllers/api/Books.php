@@ -84,7 +84,7 @@ class Books extends REST_Controller {
 
     public function file_get($id) {
         // print_r($this->input->request_headers());
-        log_message('info', 'Request headers: '.$this->input->request_headers());
+        // log_message('info', 'Request headers: '.$this->input->request_headers());
         $device_id = null;
         foreach ($this->input->request_headers() as $key => $value) {
             log_message('info', "Request header: $key => $value");
@@ -127,7 +127,7 @@ class Books extends REST_Controller {
 
         //Use this to instantiate the encryption library class
         $lib = new AESCryptFileLib($mcrypt);
-        $encrytedContent = $lib->doEncryptContent($filepath, $password, $encrypted_file);
+        $encrytedContent = $lib->doEncryptContent($filepath, $password);
 
 
         $this->output->set_output($encrytedContent);
@@ -745,7 +745,7 @@ class AESCryptFileLib
         return $dest_fh;
     }
     
-    public function doEncryptContent($source_file, $passphrase, $dest_file, $ext_data)
+    public function doEncryptContent($source_file, $passphrase, $dest_file=null, $ext_data=null)
     {
         $this->debug("ENCRYPTION", "Started");
         
