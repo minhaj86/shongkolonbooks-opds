@@ -85,6 +85,18 @@ class Books extends REST_Controller {
     public function file_get($id) {
         // print_r($this->input->request_headers());
         // log_message('info', 'Request headers: '.$this->input->request_headers());
+        $this->load->helper('array');
+        $email = self::_get_user_email();
+        $this->load->model('user_model');
+        $subscribed_books = $this->user_model->get_customer_book_subscription_by_email_and_id($email,$id);
+        $bookfile = element(0, $subscribed_books, null);
+        if ($bookfile) {
+
+        } else {
+            $this->output->set_status_header(500);
+            return;
+        }
+
         $device_id = null;
         foreach ($this->input->request_headers() as $key => $value) {
             log_message('info', "Request header: $key => $value");
