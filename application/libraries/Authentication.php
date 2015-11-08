@@ -2,7 +2,7 @@
 
 class Authentication  {
 	public function login($username,$password) {
-        $mysqli = new mysqli('localhost', 'root', '123qwe', 'opencart');
+        $mysqli = new mysqli('localhost', 'root', 'fanoosh123', 'shonkolon');
         if ($mysqli->connect_errno) {
             return FALSE;
         }

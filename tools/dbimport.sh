@@ -1,3 +1,3 @@
 #!/bin/sh
 
-mysql -u root -p123qwe opencart < data/db.sql
+mysql -u root -pfanoosh123 shonkolon < data/db.sql

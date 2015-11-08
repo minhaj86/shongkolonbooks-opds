@@ -67,7 +67,6 @@ class Catalogs extends REST_Controller {
             $id = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:id", "urn:uuid:".$e['author_id']);
             $title = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:title", $e['name']);
             $link = $xml->createElementNS("http://www.w3.org/2005/Atom", "atom:link");
-            $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').'/test/api/books/writer/'.$e['author_id']);
             $link->setAttribute("href", 'http://'.$this->input->server('SERVER_NAME').$this->config->item('book_by_writer_relative_path').$e['author_id']);
             $link->setAttribute("rel", "self");
             $link->setAttribute("type", "application/atom+xml;profile=opds-catalog;kind=acquisition");

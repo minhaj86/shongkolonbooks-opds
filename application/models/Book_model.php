@@ -40,7 +40,7 @@ class Book_model extends CI_Model {
             return $query->result_array();
     }
     public function get_file_by_book_id($id) {
-        $sql = "SELECT CONCAT(s.mountpoint,f.name) AS filepath  FROM opds_files AS f, opds_storages AS s WHERE f.storage_id = s.id AND f.id IN (SELECT file_id FROM opds_product_to_book_files WHERE product_id = $id )";
+        $sql = "SELECT CONCAT(f.file_path,f.file_name) AS filepath  FROM oc_gk_file_manager AS f WHERE f.product_id = $id";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
