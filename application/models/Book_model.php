@@ -40,7 +40,7 @@ class Book_model extends CI_Model {
             return $query->result_array();
     }
     public function get_file_by_book_id($id) {
-        $sql = "SELECT CONCAT(f.file_path,f.file_name) AS filepath  FROM oc_gk_file_manager AS f WHERE f.product_id = $id";
+        $sql = "SELECT CONCAT(f.file_path,f.file_name) AS filepath, password  FROM oc_gk_file_manager AS f WHERE f.product_id = $id";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

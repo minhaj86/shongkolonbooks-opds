@@ -61,8 +61,8 @@ class Books extends REST_Controller {
         $this->config->load('opds', FALSE, TRUE);
     }
 
-    public function fileold_get($id) {
-        print_r($this->input->request_headers());
+    public function passphrase_get($id) {
+        // print_r($this->input->request_headers());
         // log_message('info', 'Request headers: '.$this->input->request_headers());
 
         foreach ($this->input->request_headers() as $key => $value) {
@@ -70,7 +70,35 @@ class Books extends REST_Controller {
         }
         $this->load->model('book_model');
         $news = $this->book_model->get_file_by_book_id($id);
-        print_r($news);
+        // print_r($news);
+        $this->load->helper('array');
+        $file_entry = element(0, $news, null);
+        if (!$file_entry) {
+            $this->output->set_status_header(500);
+            return;
+        }
+        $password = element('password', $file_entry, null);
+        $this->output->set_content_type('application/epub+zip');
+        $this->output->set_header('X-Passphrase: '.$password.'');
+    }
+
+    public function file_get($id) {
+        // print_r($this->input->request_headers());
+        log_message('info', 'Request headers: '.$this->input->request_headers());
+        $device_id = null;
+        foreach ($this->input->request_headers() as $key => $value) {
+            log_message('info', "Request header: $key => $value");
+            if (strcmp($key,'X-Device-Id') == 0) {
+                $device_id = $value;
+            }
+        }
+        if ($device_id == null) {
+            $this->output->set_status_header(500);
+            return;
+        }
+        $this->load->model('book_model');
+        $news = $this->book_model->get_file_by_book_id($id);
+        // print_r($news);
         $this->load->helper('array');
         $file_entry = element(0, $news, null);
         if (!$file_entry) {
@@ -79,6 +107,7 @@ class Books extends REST_Controller {
         }
         $filepath = element('filepath', $file_entry, null);
         $password = element('password', $file_entry, null);
+        $password = $device_id.$password;
         if (!$filepath) {
             $this->output->set_status_header(500);
             return;
@@ -122,7 +151,7 @@ class Books extends REST_Controller {
         $decrypted_string = $crypt->decrypt($content); // this is a test        
     }
 
-    public function file_get($id) {
+    public function fileold_get($id) {
         $this->load->helper('download');
         $this->load->model('book_model');
         $news = $this->book_model->get_file_by_book_id($id);
